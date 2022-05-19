@@ -38,6 +38,7 @@
     "commonmark": "^0.29.3",
     "core-js": "^3.6.5",
     "leaflet": "~1.7.1",
+    "proj4-fully-loaded": "^0.0.4",
     "remove-markdown": "^0.3.0",
     "stac-layer": "^0.10.1",
     "urijs": "^1.19.11",
