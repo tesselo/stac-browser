@@ -4,7 +4,7 @@ import axios from "axios";
 import Utils from '../utils'
 import STAC from '../stac';
 import bs58 from 'bs58';
-import { Loading, stacRequest } from './utils';
+import { Loading, stacRequest, convertCoordinatesToEpsg4326 } from './utils';
 import URI from "urijs";
 
 Vue.use(Vuex);
@@ -542,7 +542,7 @@ function getStore(config) {
             if (!Utils.isObject(response.data)) {
               throw new Error('The response is not a valid STAC JSON');
             }
-            data = new STAC(response.data, url, path);
+            data = new STAC(convertCoordinatesToEpsg4326(response.data), url, path);
             cx.commit('loaded', {url, data});
 
             if (!cx.getters.root) {
