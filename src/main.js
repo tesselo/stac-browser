@@ -18,7 +18,7 @@ import "bootstrap-vue/dist/bootstrap-vue.css";
 import "leaflet/dist/leaflet.css";
 
 import { CATALOG_URL, PATH_PREFIX, HISTORY_MODE } from "./config";
-import { fetchUri, getProxiedUri } from "./util";
+import { fetchUri, getProxiedUri, convertCoordinatesToEpsg4326 } from "./util";
 
 const Catalog = () => import(/* webpackChunkName: "catalog" */ "./components/Catalog.vue");
 const Item = () => import(/* webpackChunkName: "item" */ "./components/Item.vue");
@@ -175,6 +175,12 @@ const main = async () => {
       getEntity: state => uri => state.entities[uri]
     },
     mutations: {
+      convertProjection(state, {entity, url}) {
+        state.entities = {
+          ...state.entities,
+          [url]: convertCoordinatesToEpsg4326(entity) 
+        }
+      },
       FAILED(state, { err, url }) {
         state.entities = {
           ...state.entities,
@@ -220,6 +226,7 @@ const main = async () => {
             const entity = await rsp.json();
 
             commit("LOADED", { entity, url });
+            commit("convertProjection", {entity, url});
           } else {
             commit("FAILED", { err: new Error(await rsp.text()), url });
           }
